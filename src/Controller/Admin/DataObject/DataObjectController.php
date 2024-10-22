@@ -410,7 +410,7 @@ class DataObjectController extends ElementControllerBase implements KernelContro
 
             try {
                 $this->getDataForObject($object, $objectFromVersion);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $object = $objectFromDatabase;
                 $this->getDataForObject($object, false);
             }
@@ -1352,7 +1352,7 @@ class DataObjectController extends ElementControllerBase implements KernelContro
         if ($request->get('data')) {
             try {
                 $this->applyChanges($object, $this->decodeJson($request->get('data')));
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $this->applyChanges($objectFromDatabase, $this->decodeJson($request->get('data')));
             }
         }
@@ -1880,7 +1880,8 @@ class DataObjectController extends ElementControllerBase implements KernelContro
             $target = DataObject::getById($targetId);
         }
 
-        if ($target->isAllowed('create')) {
+        $user = Tool\Admin::getCurrentUser();
+        if ($target->isAllowed('create') && ($source instanceof DataObject\Concrete ? $user->isAllowed($source->getClassId(), 'class') : true)) {
             $source = DataObject::getById($sourceId);
             if ($source != null) {
                 if ($source instanceof DataObject\Concrete && $latestVersion = $source->getLatestVersion()) {

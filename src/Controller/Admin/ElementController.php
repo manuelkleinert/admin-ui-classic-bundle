@@ -542,7 +542,7 @@ class ElementController extends AdminAbstractController
             $idProperty = $request->get('idProperty', 'id');
             $methodName = 'get' . ucfirst($fieldname);
             if ($ownerType == 'object' && method_exists($source, $methodName)) {
-                $data = $source->$methodName();
+                $data = DataObject\Service::useInheritedValues(true, [$source, $methodName]);
                 $editModeData = $fd->getDataForEditmode($data, $source);
                 // Inherited values show as an empty array
                 if (is_array($editModeData) && !empty($editModeData)) {
@@ -703,7 +703,7 @@ class ElementController extends AdminAbstractController
                     'requires' => [],  // Initialize 'requires' as an empty array
                 ];
 
-                if(count($elements) > 0) {
+                if (count($elements) > 0) {
                     $result = Model\Element\Service::getFilterRequiresForFrontend($elements);
                     $result['total'] = count($result['requires']);
 
@@ -765,7 +765,7 @@ class ElementController extends AdminAbstractController
                     'requiredBy' => [], // Initialize 'requiredBy' as an empty array
                 ];
 
-                if(count($elements) > 0) {
+                if (count($elements) > 0) {
                     $result = Model\Element\Service::getFilterRequiredByPathForFrontend($elements);
                     $result['total'] = count($result['requiredBy']);
 
